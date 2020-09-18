@@ -2,13 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterthreadexample/commons/const.dart';
 import 'package:flutterthreadexample/contentDetail.dart';
+import 'package:flutterthreadexample/controllers/FBCloudStore.dart';
+import 'package:flutterthreadexample/controllers/localTempDB.dart';
 import 'package:flutterthreadexample/writePost.dart';
 
 import 'commons/utils.dart';
 
 class ThreadMain extends StatefulWidget{
   final MyProfileData myData;
-  ThreadMain({this.myData});
+  final ValueChanged<MyProfileData> updateMyData;
+  ThreadMain({this.myData,this.updateMyData});
   @override State<StatefulWidget> createState() => _ThreadMain();
 }
 
@@ -70,8 +73,21 @@ class _ThreadMain extends State<ThreadMain>{
     );
   }
 
+  void _updateLikeCount(DocumentSnapshot data, bool isLikePost) async {
+    List<String> newLikeList = await LocalTempDB.saveLikeList(data['postID'],widget.myData.myLikeList,isLikePost,'likeList');
+    MyProfileData myProfileData = MyProfileData(
+        myName: widget.myData.myName,
+        myThumbnail: widget.myData.myThumbnail,
+        myLikeList: newLikeList
+    );
+    widget.updateMyData(myProfileData);
+    await FBCloudStore.updatePostLikeCount(data,isLikePost);
+    await FBCloudStore.likeToPost(data['postID'], widget.myData,isLikePost);
+  }
+
+
   void _moveToContentDetail(DocumentSnapshot data) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ContentDetail(postData: data,myData: widget.myData,)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ContentDetail(postData: data,myData: widget.myData,updateMyData: widget.updateMyData,)));
   }
 
   Widget _listTile(DocumentSnapshot data){
@@ -113,7 +129,9 @@ class _ThreadMain extends State<ThreadMain>{
                 onTap: () => _moveToContentDetail(data),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(8,10,4,10),
-                  child: Text(data['postContent'],style: TextStyle(fontSize: 16),),
+                  child: Text((data['postContent'] as String).length > 200 ? '${data['postContent'].substring(0, 132)} ...' : data['postContent'],
+                    style: TextStyle(fontSize: 16,),
+                    maxLines: 3,),
                 ),
               ),
               data['postImage'] != 'NONE' ? GestureDetector(onTap: () => _moveToContentDetail(data),child: Utils.cacheNetworkImageWithEvent(context,data['postImage'],0,0)) :
@@ -124,14 +142,20 @@ class _ThreadMain extends State<ThreadMain>{
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.thumb_up,size: 18,),
-                        Padding(
-                          padding: const EdgeInsets.only(left:8.0),
-                          child: Text('Like ( ${data['postLikeCount']} )',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                        ),
-                      ],
+                    GestureDetector(
+                      onTap: () => _updateLikeCount(data,widget.myData.myLikeList != null && widget.myData.myLikeList.contains(data['postID']) ? true : false),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.thumb_up,size: 18,color: widget.myData.myLikeList != null && widget.myData.myLikeList.contains(data['postID']) ? Colors.blue[900] : Colors.black),
+                          Padding(
+                            padding: const EdgeInsets.only(left:8.0),
+                            child: Text('Like ( ${data['postLikeCount']} )',
+                              style: TextStyle(fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                              color: widget.myData.myLikeList != null && widget.myData.myLikeList.contains(data['postID']) ? Colors.blue[900] : Colors.black),),
+                          ),
+                        ],
+                      ),
                     ),
                     GestureDetector(
                       onTap: () => _moveToContentDetail(data),
@@ -154,4 +178,42 @@ class _ThreadMain extends State<ThreadMain>{
       ),
     );
   }
+}
+
+class EnterExitRoute extends PageRouteBuilder {
+  final Widget enterPage;
+  final Widget exitPage;
+  EnterExitRoute({this.exitPage, this.enterPage})
+      : super(
+    pageBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        ) =>
+    enterPage,
+    transitionsBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        Widget child,
+        ) =>
+        Stack(
+          children: <Widget>[
+            SlideTransition(
+              position: new Tween<Offset>(
+                begin: const Offset(0.0, 0.0),
+                end: const Offset(-1.0, 0.0),
+              ).animate(animation),
+              child: exitPage,
+            ),
+            SlideTransition(
+              position: new Tween<Offset>(
+                begin: const Offset(1.0, 0.0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: enterPage,
+            )
+          ],
+        ),
+  );
 }

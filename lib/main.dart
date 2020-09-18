@@ -71,7 +71,9 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
     setState(() {
       myData = MyProfileData(
           myThumbnail: myThumbnail,
-          myName: myName
+          myName: myName,
+          myLikeList: prefs.getStringList('likeList'),
+          myLikeCommnetList: prefs.getStringList('likeCommnetList')
       );
     });
 
@@ -107,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
           TabBarView(
             controller: _tabController,
             children: [
-              ThreadMain(myData: myData,),
+              ThreadMain(myData: myData,updateMyData: updateMyData,),
               UserProfile(myData: myData,updateMyData: updateMyData,),
             ]
           ),

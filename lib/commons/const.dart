@@ -7,8 +7,10 @@ final List<String> iconImageList = ['001-panda.png','002-lion.png','003-tiger.pn
 class MyProfileData{
   final String myThumbnail;
   final String myName;
+  final List<String> myLikeList;
+  final List<String> myLikeCommnetList;
 
-  MyProfileData({this.myName,this.myThumbnail});
+  MyProfileData({this.myName,this.myThumbnail,this.myLikeList,this.myLikeCommnetList});
 }
 
 
