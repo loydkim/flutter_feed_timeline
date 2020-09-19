@@ -20,8 +20,8 @@ class WritePost extends StatefulWidget{
 
 class _WritePost extends State<WritePost>{
 
-  final FocusNode _nodeText1 = FocusNode();
   TextEditingController writingTextController = TextEditingController();
+  final FocusNode _nodeText1 = FocusNode();
   FocusNode writingTextFocus = FocusNode();
   bool _isLoading = false;
   File _postImageFile;

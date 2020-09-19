@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterthreadexample/commons/fullPhoto.dart';
 import 'package:flutterthreadexample/controllers/FBCloudStore.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:keyboard_actions/keyboard_actions_config.dart';
 
 import 'commons/const.dart';
 import 'commons/utils.dart';
@@ -19,13 +21,26 @@ class ContentDetail extends StatefulWidget{
 class _ContentDetail extends State<ContentDetail> {
   final TextEditingController _msgTextController = new TextEditingController();
   MyProfileData currentMyData;
+  String _replyUserID;
+  String _replyCommentID;
   int likeCount;
   int commentLikeCount;
+
+  FocusNode _writingTextFocus = FocusNode();
+
   @override
   void initState() {
     currentMyData = widget.myData;
     likeCount = widget.postData['postLikeCount'];
+    _msgTextController.addListener(_msgTextControllerListener);
     super.initState();
+  }
+
+  void _msgTextControllerListener(){
+    if(_msgTextController.text.length == 0) {
+      _replyUserID = null;
+      _replyCommentID = null;
+    }
   }
   void _updateLikeCount(DocumentSnapshot data, bool isLikePost) async {
     List<String> newLikeList = await LocalTempDB.saveLikeList(data['postID'],widget.myData.myLikeList,isLikePost,'likeList');
@@ -59,6 +74,13 @@ class _ContentDetail extends State<ContentDetail> {
       currentMyData = myProfileData;
     });
     await FBCloudStore.updateCommentLikeCount(data,isLikeComment);
+  }
+
+  void _replyComment(String replyTo,String replyCommentID) async {
+    _replyUserID = replyTo;
+    _replyCommentID = replyCommentID;
+    FocusScope.of(context).requestFocus(_writingTextFocus);
+    _msgTextController.text = '$replyTo ';
   }
 
   @override
@@ -159,7 +181,7 @@ class _ContentDetail extends State<ContentDetail> {
                               snapshot.data.documents.length > 0 ? ListView(
                                 primary: false,
                                 shrinkWrap: true,
-                                children: snapshot.data.documents.map((document) {
+                                children: _sortDocumentsByComment(snapshot.data.documents).map((document) {
                                   return _commentListItem(document,size);
                                 }).toList(),
                               ) : Container(),
@@ -178,16 +200,67 @@ class _ContentDetail extends State<ContentDetail> {
     );
   }
 
-  void _functionTest(){
-    List<String> testList = List<String>();
-    List<String> testList2 = List<String>();
-    testList.sublist(start)
-  }
+  List<DocumentSnapshot> _sortDocumentsByComment(List<DocumentSnapshot> data){
+    List<DocumentSnapshot> _originalData = data;
+    Map<String,List<DocumentSnapshot>> commentDocuments = Map<String,List<DocumentSnapshot>>();
+    List<int> replyCommentIndex = List<int>();
+    for(int i = 0; i < _originalData.length; i++){
+      for(int j = 0; j < _originalData.length; j++){
+        if (_originalData[i]['commentID'] == _originalData[j]['toCommentID']){
+          print('Do it index is $i and ${_originalData[i]['commentID']} and compare name is ${_originalData[j]['commentID']} ${_originalData[j]['toCommentID']}');
+          List<DocumentSnapshot> savedCommentData;
+          if (commentDocuments[_originalData[i]['commentID']] != null && commentDocuments[_originalData[i]['commentID']].length > 0) {
+            savedCommentData = commentDocuments[_originalData[i]['commentID']];
+          }else {
+            savedCommentData = List<DocumentSnapshot>();
+          }
+          savedCommentData.add(_originalData[j]);
+          commentDocuments[_originalData[i]['commentID']] = savedCommentData;
+          replyCommentIndex.add(j);
+        }
+      }
+    }
 
+    print('replyCommentIndex length is ${replyCommentIndex.length}');
+    replyCommentIndex.sort((a,b){
+      return b.compareTo(a);
+    });
+
+    // remove comment
+    if(replyCommentIndex.length > 0){
+      for(int i = 0; i < replyCommentIndex.length; i++){
+        _originalData.removeAt(replyCommentIndex[i]);
+      }
+    }
+
+    print('commentDocuments length is ${commentDocuments.length}');
+    // saved comment
+    for(DocumentSnapshot snapshot in _originalData){
+      if(commentDocuments[snapshot['commentID']] != null){
+        for(int j = 0; j < commentDocuments[snapshot['commentID']].length; j ++){
+          print(commentDocuments[snapshot['commentID']][j]['commentID']);
+        }
+      }
+    }
+
+    print('final arranged list is ');
+    // Add list to comment
+    for(int i = 0; i < _originalData.length; i++){
+      if (commentDocuments[_originalData[i]['commentID']] != null){
+        _originalData.insertAll(i+1,commentDocuments[_originalData[i]['commentID']]);
+      }
+    }
+
+    // final print
+    for (DocumentSnapshot snapshot in _originalData){
+      print(snapshot['commentContent']);
+    }
+    return _originalData;
+  }
 
   Widget _commentListItem(DocumentSnapshot data,Size size){
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: data['toUserID'] == widget.postData['userName'] ? EdgeInsets.all(8.0) : EdgeInsets.fromLTRB(34.0,8.0,8.0,8.0),
       child: Stack(
         children: <Widget>[
           Row(
@@ -196,8 +269,8 @@ class _ContentDetail extends State<ContentDetail> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(6.0,2.0,10.0,2.0),
                 child: Container(
-                    width: 48,
-                    height: 48,
+                    width: data['toUserID'] == widget.postData['userName'] ? 48 : 40,
+                    height: data['toUserID'] == widget.postData['userName'] ? 48 : 40,
                     child: Image.asset('images/${data['userThumbnail']}')
                 ),
               ),
@@ -216,12 +289,20 @@ class _ContentDetail extends State<ContentDetail> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left:4.0),
-                            child: Text(data['commentContent'],maxLines: null,),
+                            child: data['toUserID'] == widget.postData['userName'] ? Text(data['commentContent'],maxLines: null,) :
+                            RichText(
+                              text: TextSpan(
+                                children: <TextSpan>[
+                                  TextSpan(text: data['toUserID'], style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue[800])),
+                                  TextSpan(text: _commentWithoutReplyUser(data['commentContent']), style: TextStyle(color:Colors.black)),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    width: size.width-90,
+                    width: size.width- (data['toUserID'] == widget.postData['userName'] ? 90 : 110),
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.all(
@@ -242,7 +323,13 @@ class _ContentDetail extends State<ContentDetail> {
                             child: Text('Like',
                                 style:TextStyle(fontWeight: FontWeight.bold,color:currentMyData.myLikeCommnetList != null && currentMyData.myLikeCommnetList.contains(data['commentID']) ? Colors.blue[900] : Colors.grey[700]))
                           ),
-                          Text('Reply',style:TextStyle(fontWeight: FontWeight.bold,color:Colors.grey[700])),
+                          GestureDetector(
+                            onTap: (){
+                              _replyComment(data['userName'],data['commentID']);
+                              print('leave comment of commnet');
+                            },
+                            child: Text('Reply',style:TextStyle(fontWeight: FontWeight.bold,color:Colors.grey[700]))
+                          ),
                         ],
                       ),
                     ),
@@ -273,6 +360,13 @@ class _ContentDetail extends State<ContentDetail> {
     );
   }
 
+  String _commentWithoutReplyUser(String commentString){
+    List<String> splitCommentString = commentString.split(' ');
+    int commentUserNameLength = splitCommentString[0].length;
+    String returnText = commentString.substring(commentUserNameLength,commentString.length);
+    return returnText;
+  }
+
   Widget _buildTextComposer() {
     return new IconTheme(
       data: new IconThemeData(color: Theme.of(context).accentColor),
@@ -282,6 +376,7 @@ class _ContentDetail extends State<ContentDetail> {
           children: <Widget>[
             new Flexible(
               child: new TextField(
+                focusNode: _writingTextFocus,
                 controller: _msgTextController,
                 onSubmitted: _handleSubmitted,
                 decoration: new InputDecoration.collapsed(
@@ -292,10 +387,10 @@ class _ContentDetail extends State<ContentDetail> {
             new Container(
               margin: new EdgeInsets.symmetric(horizontal: 2.0),
               child: new IconButton(
-                  icon: new Icon(Icons.send),
-                  onPressed: () {
-                    _handleSubmitted(_msgTextController.text);
-                  }),
+                icon: new Icon(Icons.send),
+                onPressed: () {
+                  _handleSubmitted(_msgTextController.text);
+                }),
             ),
           ],
         ),
@@ -305,18 +400,12 @@ class _ContentDetail extends State<ContentDetail> {
 
   Future<void> _handleSubmitted(String text) async {
     try {
-      await FBCloudStore.commentToPost(widget.postData['userName'],widget.postData['postID'], _msgTextController.text, widget.myData);
+      await FBCloudStore.commentToPost(_replyUserID == null ? widget.postData['userName'] : _replyUserID,_replyCommentID == null ? widget.postData['commentID'] : _replyCommentID,widget.postData['postID'], _msgTextController.text, widget.myData);
       await FBCloudStore.updatePostCommentCount(widget.postData);
       FocusScope.of(context).requestFocus(FocusNode());
       _msgTextController.text = '';
-//      setState(() { _isLoading = true; });
-//      await FirebaseController.instanace.sendMessageToChatRoom(widget.chatID,widget.myID,widget.selectedUserID,text,messageType);
-//      await FirebaseController.instanace.updateChatRequestField(widget.selectedUserID, messageType == 'text' ? text : '(Photo)',widget.chatID,widget.myID,widget.selectedUserID);
-//      await FirebaseController.instanace.updateChatRequestField(widget.myID, messageType == 'text' ? text : '(Photo)',widget.chatID,widget.myID,widget.selectedUserID);
-//      _getUnreadMSGCountThenSendMessage();
     }catch(e){
-//      _showDialog('Error user information to database');
-//      _resetTextFieldAndLoading();
+      print('error to submit comment');
     }
   }
 

@@ -45,11 +45,12 @@ class FBCloudStore{
     postData.reference.updateData({'commentLikeCount': FieldValue.increment(isLikePost ? -1 : 1)});
   }
 
-  static Future<void> commentToPost(String toUserID,String postID,String commentContent,MyProfileData userProfile) async{
+  static Future<void> commentToPost(String toUserID,String toCommentID,String postID,String commentContent,MyProfileData userProfile) async{
     String commentID = getRandomString(8) + Random().nextInt(500).toString();
     Firestore.instance.collection('thread').document(postID).collection('comment').document(commentID).setData({
       'toUserID':toUserID,
       'commentID':commentID,
+      'toCommentID':toCommentID,
       'userName':userProfile.myName,
       'userThumbnail':userProfile.myThumbnail,
       'commentTimeStamp':DateTime.now().millisecondsSinceEpoch,
