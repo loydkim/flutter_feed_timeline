@@ -49,9 +49,14 @@ class _WritePost extends State<WritePost>{
                 child: Container(
                   color: Colors.grey[200],
                   padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    "Add Image",
-                    style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.add_photo_alternate,size:28),
+                      Text(
+                        "Add Image",
+                        style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 ),
               );

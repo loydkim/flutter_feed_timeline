@@ -23,6 +23,7 @@ class _ContentDetail extends State<ContentDetail> {
   MyProfileData currentMyData;
   String _replyUserID;
   String _replyCommentID;
+  String _replyUserFCMToken;
   int likeCount;
   int commentLikeCount;
 
@@ -40,6 +41,7 @@ class _ContentDetail extends State<ContentDetail> {
     if(_msgTextController.text.length == 0) {
       _replyUserID = null;
       _replyCommentID = null;
+      _replyUserFCMToken = null;
     }
   }
   void _updateLikeCount(DocumentSnapshot data, bool isLikePost) async {
@@ -57,7 +59,7 @@ class _ContentDetail extends State<ContentDetail> {
     setState(() {
       isLikePost ? likeCount-- : likeCount++;
     });
-    await FBCloudStore.updatePostLikeCount(data,isLikePost);
+    await FBCloudStore.updatePostLikeCount(data,isLikePost,widget.myData);
     await FBCloudStore.likeToPost(data['postID'], myProfileData,isLikePost);
   }
 
@@ -73,12 +75,13 @@ class _ContentDetail extends State<ContentDetail> {
     setState(() {
       currentMyData = myProfileData;
     });
-    await FBCloudStore.updateCommentLikeCount(data,isLikeComment);
+    await FBCloudStore.updateCommentLikeCount(data,isLikeComment,widget.myData);
   }
 
-  void _replyComment(String replyTo,String replyCommentID) async {
+  void _replyComment(String replyTo,String replyCommentID,String replyUserToken) async {
     _replyUserID = replyTo;
     _replyCommentID = replyCommentID;
+    _replyUserFCMToken = replyUserToken;
     FocusScope.of(context).requestFocus(_writingTextFocus);
     _msgTextController.text = '$replyTo ';
   }
@@ -313,7 +316,7 @@ class _ContentDetail extends State<ContentDetail> {
                   Padding(
                     padding: const EdgeInsets.only(left:8.0,top: 4.0),
                     child: Container(
-                      width: 110,
+                      width: size.width * 0.38,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
@@ -325,7 +328,7 @@ class _ContentDetail extends State<ContentDetail> {
                           ),
                           GestureDetector(
                             onTap: (){
-                              _replyComment(data['userName'],data['commentID']);
+                              _replyComment(data['userName'],data['commentID'],data['FCMToken']);
                               print('leave comment of commnet');
                             },
                             child: Text('Reply',style:TextStyle(fontWeight: FontWeight.bold,color:Colors.grey[700]))
@@ -400,7 +403,7 @@ class _ContentDetail extends State<ContentDetail> {
 
   Future<void> _handleSubmitted(String text) async {
     try {
-      await FBCloudStore.commentToPost(_replyUserID == null ? widget.postData['userName'] : _replyUserID,_replyCommentID == null ? widget.postData['commentID'] : _replyCommentID,widget.postData['postID'], _msgTextController.text, widget.myData);
+      await FBCloudStore.commentToPost(_replyUserID == null ? widget.postData['userName'] : _replyUserID,_replyCommentID == null ? widget.postData['commentID'] : _replyCommentID,widget.postData['postID'], _msgTextController.text, widget.myData,_replyUserID == null ? widget.postData['FCMToken'] : _replyUserFCMToken);
       await FBCloudStore.updatePostCommentCount(widget.postData);
       FocusScope.of(context).requestFocus(FocusNode());
       _msgTextController.text = '';

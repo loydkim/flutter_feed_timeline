@@ -6,6 +6,7 @@ import 'package:flutterthreadexample/userProfile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'commons/utils.dart';
+import 'controllers/FBCloudMessaging.dart';
 import 'threadMain.dart';
 
 void main() => runApp(MyApp());
@@ -39,6 +40,9 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
 
   @override
   void initState() {
+
+    FBCloudMessaging.instance.takeFCMTokenWhenAppLaunch();
+    FBCloudMessaging.instance.initLocalNotification();
     _tabController = new TabController(vsync: this, length: 2);
     _tabController.addListener(_handleTabSelection);
     _takeMyData();
@@ -73,7 +77,8 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
           myThumbnail: myThumbnail,
           myName: myName,
           myLikeList: prefs.getStringList('likeList'),
-          myLikeCommnetList: prefs.getStringList('likeCommnetList')
+          myLikeCommnetList: prefs.getStringList('likeCommnetList'),
+          myFCMToken: prefs.getString('FCMToken'),
       );
     });
 
