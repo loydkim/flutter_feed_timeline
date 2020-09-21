@@ -4,6 +4,12 @@
 | ------------- | ------------- |
 | <img src="https://github.com/loydkim/flutter_feed_timeline/blob/master/ios_pro.gif" width="300" height="520">  | <img src="https://github.com/loydkim/flutter_feed_timeline/blob/master/android_promotion.gif" width="300" height="520">  |
 
+* Project Feature *
+
+- Realtime timeline
+- Push Notification
+- Post with Image
+- Change Profile information
 
 ## Getting Started
 
