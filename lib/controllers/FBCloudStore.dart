@@ -40,13 +40,12 @@ class FBCloudStore{
         'userThumbnail':userProfile.myThumbnail,
       });
     }
-
   }
 
   static Future<void> updatePostLikeCount(DocumentSnapshot postData,bool isLikePost,MyProfileData myProfileData) async{
     postData.reference.updateData({'postLikeCount': FieldValue.increment(isLikePost ? -1 : 1)});
     if(!isLikePost){
-      await FBCloudMessaging.instance.sendNotificationMessageToPeerUser('0','${myProfileData.myName} likes your post','${myProfileData.myName}',postData['FCMToken']);
+      await FBCloudMessaging.instance.sendNotificationMessageToPeerUser('${myProfileData.myName} likes your post','${myProfileData.myName}',postData['FCMToken']);
     }
   }
 
@@ -57,12 +56,12 @@ class FBCloudStore{
   static Future<void> updateCommentLikeCount(DocumentSnapshot postData,bool isLikePost,MyProfileData myProfileData) async{
     postData.reference.updateData({'commentLikeCount': FieldValue.increment(isLikePost ? -1 : 1)});
     if(!isLikePost){
-      await FBCloudMessaging.instance.sendNotificationMessageToPeerUser('0','${myProfileData.myName} likes your comment','${myProfileData.myName}',postData['FCMToken']);
+      await FBCloudMessaging.instance.sendNotificationMessageToPeerUser('${myProfileData.myName} likes your comment','${myProfileData.myName}',postData['FCMToken']);
     }
   }
 
   static Future<void> commentToPost(String toUserID,String toCommentID,String postID,String commentContent,MyProfileData userProfile,String postFCMToken) async{
-    String commentID = getRandomString(8) + Random().nextInt(500).toString();
+    String commentID = Utils.getRandomString(8) + Random().nextInt(500).toString();
     String myFCMToken;
     if(userProfile.myFCMToken == null){
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -81,6 +80,6 @@ class FBCloudStore{
       'commentLikeCount':0,
       'FCMToken':myFCMToken
     });
-    await FBCloudMessaging.instance.sendNotificationMessageToPeerUser('0',commentContent,'${userProfile.myName}',postFCMToken);
+    await FBCloudMessaging.instance.sendNotificationMessageToPeerUser(commentContent,'${userProfile.myName} was commented',postFCMToken);
   }
 }

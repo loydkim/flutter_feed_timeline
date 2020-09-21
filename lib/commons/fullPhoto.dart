@@ -53,5 +53,4 @@ class _FullPhoto extends State<FullPhoto> {
       ),
     );
   }
-
 }

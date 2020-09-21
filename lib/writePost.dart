@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterthreadexample/controllers/FBStorage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -68,11 +67,10 @@ class _WritePost extends State<WritePost>{
   }
 
   void _postToFB() async {
-
     setState(() {
       _isLoading = true;
     });
-    String postID = getRandomString(8) + Random().nextInt(500).toString();
+    String postID = Utils.getRandomString(8) + Random().nextInt(500).toString();
     String postImageURL;
     if(_postImageFile != null){
       postImageURL = await FBStorage.uploadPostImages(postID: postID, postImageFile: _postImageFile);
@@ -150,14 +148,7 @@ class _WritePost extends State<WritePost>{
               ],
             ),
           ),
-          _isLoading ? Positioned(
-            child: Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-              color: Colors.white.withOpacity(0.7),
-            ),
-          ) : Container()
+          Utils.loadingCircle(_isLoading),
         ],
       ),
     );
@@ -171,10 +162,7 @@ class _WritePost extends State<WritePost>{
         setState(() {
           _postImageFile = cropImageFile;
         });
-      }else {
-//        CommonWidget.showDialogWithText(context, 'Take image error. Please try it again.');
       }
     }
   }
-
 }

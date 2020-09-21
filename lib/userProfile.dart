@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterthreadexample/changeUserIcon.dart';
+import 'package:flutterthreadexample/subViews/changeUserIcon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'commons/const.dart';
@@ -44,7 +44,10 @@ class _UserProfile extends State<UserProfile>{
                           height: 40,
                           child: Image.asset('images/$_myThumbnail')
                         ),
-                        Text('Change',style: TextStyle(color: Colors.blue[900],fontWeight: FontWeight.bold,fontSize: 16),)
+                        Padding(
+                          padding: const EdgeInsets.only(top:3.0),
+                          child: Text('Change',style: TextStyle(color: Colors.blue[900],fontWeight: FontWeight.bold,fontSize: size.width *0.03),),
+                        )
                       ],
                     )
                   ),

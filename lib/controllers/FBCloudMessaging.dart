@@ -61,19 +61,7 @@ class FBCloudMessaging{
             msg = message['notification']['body'];
             name = message['notification']['title'];
           }
-
-          String currentChatRoom = (prefs.get('currentChatRoom') ?? 'None');
-
-          if(Platform.isIOS) {
-//            if(message['chatroomid'] != currentChatRoom) {
-              sendLocalNotification(name,msg);
-//            }
-          }else {
-//            if(message['data']['chatroomid'] != currentChatRoom) {
-              sendLocalNotification(name,msg);
-//            }
-          }
-//          FirebaseController.instanace.getUnreadMSGCount();
+          sendLocalNotification(name,msg);
         },
         onBackgroundMessage: Platform.isIOS ? null : myBackgroundMessageHandler,
         onLaunch: (Map<String, dynamic> message) async {
@@ -134,7 +122,7 @@ class FBCloudMessaging{
 
   // Send a notification message
 
-  Future<void> sendNotificationMessageToPeerUser(String unReadMSGCount,String body,String title,String receiverToken) async {
+  Future<void> sendNotificationMessageToPeerUser(String body,String title,String receiverToken) async {
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
     await http.post(
       'https://fcm.googleapis.com/fcm/send',
@@ -147,7 +135,6 @@ class FBCloudMessaging{
           'notification': <String, dynamic>{
             'body': body,
             'title': title,
-//            'badge':'$unReadMSGCount',
             "sound" : "default"
           },
           'priority': 'high',
@@ -155,7 +142,6 @@ class FBCloudMessaging{
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
             'id': '1',
             'status': 'done',
-//            'chatroomid': chatID,
           },
           'to': receiverToken,
         },

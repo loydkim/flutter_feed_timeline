@@ -14,7 +14,6 @@ class LocalTempDB{
       }else {
         myLikeList.add(postID);
       }
-
     }
     prefs.setStringList(updateType, newLikeList);
     return newLikeList;

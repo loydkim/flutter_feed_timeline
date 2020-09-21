@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutterthreadexample/commons/const.dart';
 import 'package:flutterthreadexample/userProfile.dart';
@@ -12,7 +11,6 @@ import 'threadMain.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,8 +24,6 @@ class MyApp extends StatelessWidget {
   }
 }
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
-
   @override _MyHomePageState createState() => _MyHomePageState();
 }
 
@@ -40,7 +36,6 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
 
   @override
   void initState() {
-
     FBCloudMessaging.instance.takeFCMTokenWhenAppLaunch();
     FBCloudMessaging.instance.initLocalNotification();
     _tabController = new TabController(vsync: this, length: 2);
@@ -65,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
     }
 
     if (prefs.get('myName') == null) {
-      String tempName = getRandomString(8);
+      String tempName = Utils.getRandomString(8);
       prefs.setString('myName',tempName);
       myName = tempName;
     }else{
@@ -95,7 +90,6 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
     });
   }
 
-
   void updateMyData(MyProfileData newMyData) {
     setState(() {
       myData = newMyData;
@@ -118,14 +112,7 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
               UserProfile(myData: myData,updateMyData: updateMyData,),
             ]
           ),
-          _isLoading ? Positioned(
-            child: Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-              color: Colors.white.withOpacity(0.7),
-            ),
-          ) : Container()
+          Utils.loadingCircle(_isLoading),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
