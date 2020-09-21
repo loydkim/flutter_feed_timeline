@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterthreadexample/commons/youtubepromotion.dart';
 import 'package:flutterthreadexample/subViews/changeUserIcon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -71,6 +72,11 @@ class _UserProfile extends State<UserProfile>{
             ],
           )
         ),
+
+        Padding(
+          padding: const EdgeInsets.only(top:38.0),
+          child: youtubePromotion(),
+        )
       ],
     );
   }
