@@ -2,7 +2,7 @@
 
 | iOS Device  | Android Device |
 | ------------- | ------------- |
-| <img src="https://github.com/loydkim/flutter_feed_timeline/blob/master/ios_pro.gif" width="300" height="520">  | <img src="https://github.com/loydkim/flutter_feed_timeline/blob/master/android_pro.gif" width="300" height="520">  |
+| <img src="https://github.com/loydkim/flutter_feed_timeline/blob/master/ios_pro.gif" width="300" height="520">  | <img src="https://github.com/loydkim/flutter_feed_timeline/blob/master/android_promotion.gif" width="300" height="520">  |
 
 
 ## Getting Started
