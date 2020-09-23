@@ -9,7 +9,8 @@ class ThreadItem extends StatefulWidget{
   final ValueChanged<MyProfileData> updateMyDataToMain;
   final bool isFromThread;
   final Function threadItemAction;
-  ThreadItem({this.data,this.myData,this.updateMyDataToMain,this.threadItemAction,this.isFromThread});
+  final int commentCount;
+  ThreadItem({this.data,this.myData,this.updateMyDataToMain,this.threadItemAction,this.isFromThread,this.commentCount});
   @override State<StatefulWidget> createState() => _ThreadItem();
 }
 
@@ -110,7 +111,7 @@ class _ThreadItem extends State<ThreadItem>{
                           Icon(Icons.mode_comment,size: 18),
                           Padding(
                             padding: const EdgeInsets.only(left:8.0),
-                            child: Text('Comment ( ${widget.data['postCommentCount']} )',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                            child: Text('Comment ( ${widget.commentCount} )',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
                           ),
                         ],
                       ),

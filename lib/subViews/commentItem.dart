@@ -23,7 +23,6 @@ class _CommentItem extends State<CommentItem>{
   }
 
   void _updateLikeCount(bool isLikePost) async{
-//    MyProfileData _newProfileData = await Utils.updateLikeCount(widget.data,widget.myData.myLikeList != null && widget.myData.myLikeList.contains(widget.data['postID']) ? true : false,widget.myData,widget.updateMyDataToMain);
     MyProfileData _newProfileData = await Utils.updateLikeCount(widget.data,isLikePost,widget.myData,widget.updateMyDataToMain,false);
     setState(() {
       _currentMyData = _newProfileData;
