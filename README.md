@@ -4,12 +4,17 @@
 | ------------- | ------------- |
 | <img src="https://github.com/loydkim/flutter_feed_timeline/blob/master/ios_pro.gif" width="300" height="520">  | <img src="https://github.com/loydkim/flutter_feed_timeline/blob/master/android_promotion.gif" width="300" height="520">  |
 
+** Please click the Image to know how it works **
+
+[![Youtube](https://img.youtube.com/vi/EtzfZLjBgJk/0.jpg)](https://youtu.be/EtzfZLjBgJk)
+
 * Project Feature *
 
 - Realtime timeline
 - Push Notification
-- Post with Image
+- Post a text with Image
 - Change Profile information
+- Write a comment and reply the comment.
 
 ## Getting Started
 
