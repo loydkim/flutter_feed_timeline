@@ -16,6 +16,14 @@
 - Change Profile information
 - Write a comment and reply the comment.
 
+[!] Gradle does not have execution permission. You should change the ownership of the project directory to your user, or move the project to a directory with execute permissions. Gradle task assembleDebug failed with exit code 1 Exited (sigterm)
+
+Do 
+
+chmod a+rx android/gradlew
+
+command in terminal.
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
