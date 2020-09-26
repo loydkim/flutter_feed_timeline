@@ -73,10 +73,10 @@ class _UserProfile extends State<UserProfile>{
           )
         ),
 
-//        Padding(
-//          padding: const EdgeInsets.only(top:38.0),
-//          child: youtubePromotion(),
-//        )
+        Padding(
+          padding: const EdgeInsets.only(top:38.0),
+          child: youtubePromotion(),
+        )
       ],
     );
   }
