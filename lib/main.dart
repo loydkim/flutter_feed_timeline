@@ -6,9 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'commons/utils.dart';
 import 'controllers/FBCloudMessaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'threadMain.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  //https://stackoverflow.com/questions/63492211/no-firebase-app-default-has-been-created-call-firebase-initializeapp-in
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -23,12 +29,13 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class MyHomePage extends StatefulWidget {
-  @override _MyHomePageState createState() => _MyHomePageState();
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
-
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   TabController _tabController;
   MyProfileData myData;
 
@@ -44,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
     super.initState();
   }
 
-  Future<void> _takeMyData() async{
+  Future<void> _takeMyData() async {
     setState(() {
       _isLoading = true;
     });
@@ -53,27 +60,27 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
     String myName;
     if (prefs.get('myThumbnail') == null) {
       String tempThumbnail = iconImageList[Random().nextInt(50)];
-      prefs.setString('myThumbnail',tempThumbnail);
+      prefs.setString('myThumbnail', tempThumbnail);
       myThumbnail = tempThumbnail;
-    }else{
+    } else {
       myThumbnail = prefs.get('myThumbnail');
     }
 
     if (prefs.get('myName') == null) {
       String tempName = Utils.getRandomString(8);
-      prefs.setString('myName',tempName);
+      prefs.setString('myName', tempName);
       myName = tempName;
-    }else{
+    } else {
       myName = prefs.get('myName');
     }
 
     setState(() {
       myData = MyProfileData(
-          myThumbnail: myThumbnail,
-          myName: myName,
-          myLikeList: prefs.getStringList('likeList'),
-          myLikeCommnetList: prefs.getStringList('likeCommnetList'),
-          myFCMToken: prefs.getString('FCMToken'),
+        myThumbnail: myThumbnail,
+        myName: myName,
+        myLikeList: prefs.getStringList('likeList'),
+        myLikeCommnetList: prefs.getStringList('likeCommnetList'),
+        myFCMToken: prefs.getString('FCMToken'),
       );
     });
 
@@ -105,13 +112,16 @@ class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
       ),
       body: Stack(
         children: <Widget>[
-          TabBarView(
-            controller: _tabController,
-            children: [
-              ThreadMain(myData: myData,updateMyData: updateMyData,),
-              UserProfile(myData: myData,updateMyData: updateMyData,),
-            ]
-          ),
+          TabBarView(controller: _tabController, children: [
+            ThreadMain(
+              myData: myData,
+              updateMyData: updateMyData,
+            ),
+            UserProfile(
+              myData: myData,
+              updateMyData: updateMyData,
+            ),
+          ]),
           Utils.loadingCircle(_isLoading),
         ],
       ),
