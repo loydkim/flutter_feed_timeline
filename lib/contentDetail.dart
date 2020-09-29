@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterthreadexample/commons/fullPhoto.dart';
 import 'package:flutterthreadexample/controllers/FBCloudStore.dart';
-import 'package:flutterthreadexample/subViews/threadItem.dart';
+import 'package:flutterthreadexample/model/threadItem.dart';
 
 import 'commons/const.dart';
 import 'commons/utils.dart';
-import 'subViews/commentItem.dart';
+import 'model/commentItem.dart';
 
 class ContentDetail extends StatefulWidget {
   final DocumentSnapshot postData;
@@ -68,7 +68,7 @@ class _ContentDetail extends State<ContentDetail> {
         body: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('thread')
-                .doc(widget.postData.get('postID'))
+                .doc(widget.postData.id)
                 .collection('comment')
                 .orderBy('commentTimeStamp', descending: true)
                 .snapshots(),
@@ -156,15 +156,14 @@ class _ContentDetail extends State<ContentDetail> {
     try {
       await FBCloudStore.commentToPost(
           _replyUserID == null ? widget.postData.get('userName') : _replyUserID,
-          _replyCommentID == null
-              ? widget.postData.get('commentID')
-              : _replyCommentID,
-          widget.postData.get('postID'),
+          _replyCommentID == null ? widget.postData.id : _replyCommentID,
+          widget.postData.id,
           _msgTextController.text,
           widget.myData,
           _replyUserID == null
               ? widget.postData.get('FCMToken')
               : _replyUserFCMToken);
+
       await FBCloudStore.updatePostCommentCount(widget.postData);
       FocusScope.of(context).requestFocus(FocusNode());
       _msgTextController.text = '';

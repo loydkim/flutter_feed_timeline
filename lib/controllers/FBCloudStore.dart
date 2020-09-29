@@ -7,8 +7,11 @@ import 'package:flutterthreadexample/controllers/FBCloudMessaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FBCloudStore {
-  static Future<void> sendPostInFirebase(String postID, String postContent,
-      MyProfileData userProfile, String postImageURL) async {
+  static Future<void> sendPostInFirebase(
+      DocumentReference newThreadRef,
+      String postContent,
+      MyProfileData userProfile,
+      String postImageURL) async {
     String postFCMToken;
     if (userProfile.myFCMToken == null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -16,8 +19,8 @@ class FBCloudStore {
     } else {
       postFCMToken = userProfile.myFCMToken;
     }
-    FirebaseFirestore.instance.collection('thread').doc(postID).set({
-      'postID': postID,
+
+    newThreadRef.set({
       'userName': userProfile.myName,
       'userThumbnail': userProfile.myThumbnail,
       'postTimeStamp': DateTime.now().millisecondsSinceEpoch,
@@ -100,6 +103,7 @@ class FBCloudStore {
     } else {
       myFCMToken = userProfile.myFCMToken;
     }
+
     FirebaseFirestore.instance
         .collection('thread')
         .doc(postID)

@@ -1,13 +1,15 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutterthreadexample/commons/const.dart';
-import 'package:flutterthreadexample/userProfile.dart';
+import 'package:flutterthreadexample/screens/userProfile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'commons/utils.dart';
 import 'controllers/FBCloudMessaging.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'threadMain.dart';
+import 'screens/threadMain.dart';
+
+import 'package:flutterthreadexample/screens/explore_screen.dart';
 
 void main() async {
   //https://stackoverflow.com/questions/63492211/no-firebase-app-default-has-been-created-call-firebase-initializeapp-in
@@ -20,9 +22,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'withOn',
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
+        primarySwatch: Colors.teal,
       ),
       home: MyHomePage(),
       debugShowCheckedModeBanner: false,
@@ -45,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void initState() {
     FBCloudMessaging.instance.takeFCMTokenWhenAppLaunch();
     FBCloudMessaging.instance.initLocalNotification();
-    _tabController = new TabController(vsync: this, length: 2);
+    _tabController = new TabController(vsync: this, length: 3);
     _tabController.addListener(_handleTabSelection);
     _takeMyData();
     super.initState();
@@ -106,13 +108,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Flutter Thread example'),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   title: Text('Flutter Thread example'),
+      //   centerTitle: true,
+      // ),
       body: Stack(
         children: <Widget>[
           TabBarView(controller: _tabController, children: [
+            ExploreTab(),
             ThreadMain(
               myData: myData,
               updateMyData: updateMyData,
@@ -128,10 +131,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _tabController.index,
-        selectedItemColor: Colors.amber[900],
-        unselectedItemColor: Colors.grey[800],
+        // selectedItemColor: Colors.amber[900],
+        // unselectedItemColor: Colors.grey[800],
         showUnselectedLabels: true,
         items: [
+          BottomNavigationBarItem(
+            icon: ExploreTab.androidIcon, //
+            title: Text(ExploreTab.title),
+          ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.people),
             title: new Text('Thread'),

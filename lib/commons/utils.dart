@@ -87,7 +87,10 @@ class Utils {
       ValueChanged<MyProfileData> updateMyData,
       bool isThread) async {
     List<String> newLikeList = await LocalTempDB.saveLikeList(
-        data.get(isThread ? 'postID' : 'commentID'),
+        (isThread
+            ? data.id
+            : data.get(
+                'commentID')), //data.get(isThread ? 'postID' : 'commentID'),
         myProfileData.myLikeList,
         isLikePost,
         isThread ? 'likeList' : 'likeCommnetList');
@@ -104,8 +107,7 @@ class Utils {
         : await FBCloudStore.updateCommentLikeCount(
             data, isLikePost, myProfileData);
     if (isThread) {
-      await FBCloudStore.likeToPost(
-          data.get('postID'), myProfileData, isLikePost);
+      await FBCloudStore.likeToPost(data.id, myProfileData, isLikePost);
     }
     return myNewProfileData;
   }
@@ -118,19 +120,16 @@ class Utils {
     List<int> replyCommentIndex = List<int>();
     for (int i = 0; i < _originalData.length; i++) {
       for (int j = 0; j < _originalData.length; j++) {
-        if (_originalData[i].get('commentID') ==
-            _originalData[j].get('toCommentID')) {
+        if (_originalData[i].id == _originalData[j].get('toCommentID')) {
           List<DocumentSnapshot> savedCommentData;
-          if (commentDocuments[_originalData[i].get('commentID')] != null &&
-              commentDocuments[_originalData[i].get('commentID')].length > 0) {
-            savedCommentData =
-                commentDocuments[_originalData[i].get('commentID')];
+          if (commentDocuments[_originalData[i].id] != null &&
+              commentDocuments[_originalData[i].id].length > 0) {
+            savedCommentData = commentDocuments[_originalData[i].id];
           } else {
             savedCommentData = List<DocumentSnapshot>();
           }
           savedCommentData.add(_originalData[j]);
-          commentDocuments[_originalData[i].get('commentID')] =
-              savedCommentData;
+          commentDocuments[_originalData[i].id] = savedCommentData;
           replyCommentIndex.add(j);
         }
       }
@@ -149,9 +148,8 @@ class Utils {
 
     // Add list to comment
     for (int i = 0; i < _originalData.length; i++) {
-      if (commentDocuments[_originalData[i].get('commentID')] != null) {
-        _originalData.insertAll(
-            i + 1, commentDocuments[_originalData[i].get('commentID')]);
+      if (commentDocuments[_originalData[i].id] != null) {
+        _originalData.insertAll(i + 1, commentDocuments[_originalData[i].id]);
       }
     }
     return _originalData;
