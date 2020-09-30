@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterthreadexample/commons/const.dart';
 import 'package:flutterthreadexample/commons/utils.dart';
+import 'package:flutterthreadexample/model/user_model.dart';
 
 class ThreadItem extends StatefulWidget {
   final DocumentSnapshot data;
-  final MyProfileData myData;
-  final ValueChanged<MyProfileData> updateMyDataToMain;
+  final User myData;
+  final ValueChanged<User> updateMyDataToMain;
   final bool isFromThread;
   final Function threadItemAction;
   final int commentCount;
@@ -22,7 +23,7 @@ class ThreadItem extends StatefulWidget {
 }
 
 class _ThreadItem extends State<ThreadItem> {
-  MyProfileData _currentMyData;
+  User _currentMyData;
   int _likeCount;
   @override
   void initState() {
@@ -32,7 +33,7 @@ class _ThreadItem extends State<ThreadItem> {
   }
 
   void _updateLikeCount(bool isLikePost) async {
-    MyProfileData _newProfileData = await Utils.updateLikeCount(
+    User _newProfileData = await Utils.updateLikeCount(
         widget.data,
         widget.myData.myLikeList != null &&
                 widget.myData.myLikeList.contains(widget.data.id)

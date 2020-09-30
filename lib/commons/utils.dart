@@ -9,6 +9,7 @@ import 'package:flutterthreadexample/controllers/localTempDB.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 import 'const.dart';
+import 'package:flutterthreadexample/model/user_model.dart';
 
 class Utils {
   static Widget loadingCircle(bool isLoading) {
@@ -80,11 +81,11 @@ class Utils {
     );
   }
 
-  static Future<MyProfileData> updateLikeCount(
+  static Future<User> updateLikeCount(
       DocumentSnapshot data,
       bool isLikePost,
-      MyProfileData myProfileData,
-      ValueChanged<MyProfileData> updateMyData,
+      User myProfileData,
+      ValueChanged<User> updateMyData,
       bool isThread) async {
     List<String> newLikeList = await LocalTempDB.saveLikeList(
         (isThread
@@ -94,7 +95,7 @@ class Utils {
         myProfileData.myLikeList,
         isLikePost,
         isThread ? 'likeList' : 'likeCommnetList');
-    MyProfileData myNewProfileData = MyProfileData(
+    User myNewProfileData = User(
         myName: myProfileData.myName,
         myThumbnail: myProfileData.myThumbnail,
         myLikeList: isThread ? newLikeList : myProfileData.myLikeList,

@@ -5,13 +5,11 @@ import 'package:flutterthreadexample/commons/const.dart';
 import 'package:flutterthreadexample/commons/utils.dart';
 import 'package:flutterthreadexample/controllers/FBCloudMessaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutterthreadexample/model/user_model.dart';
 
 class FBCloudStore {
-  static Future<void> sendPostInFirebase(
-      DocumentReference newThreadRef,
-      String postContent,
-      MyProfileData userProfile,
-      String postImageURL) async {
+  static Future<void> sendPostInFirebase(DocumentReference newThreadRef,
+      String postContent, User userProfile, String postImageURL) async {
     String postFCMToken;
     if (userProfile.myFCMToken == null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -33,7 +31,7 @@ class FBCloudStore {
   }
 
   static Future<void> likeToPost(
-      String postID, MyProfileData userProfile, bool isLikePost) async {
+      String postID, User userProfile, bool isLikePost) async {
     if (isLikePost) {
       DocumentReference likeReference = FirebaseFirestore.instance
           .collection('thread')
@@ -57,8 +55,8 @@ class FBCloudStore {
     }
   }
 
-  static Future<void> updatePostLikeCount(DocumentSnapshot postData,
-      bool isLikePost, MyProfileData myProfileData) async {
+  static Future<void> updatePostLikeCount(
+      DocumentSnapshot postData, bool isLikePost, User myProfileData) async {
     postData.reference
         .update({'postLikeCount': FieldValue.increment(isLikePost ? -1 : 1)});
     if (!isLikePost) {
@@ -75,8 +73,8 @@ class FBCloudStore {
     postData.reference.update({'postCommentCount': FieldValue.increment(1)});
   }
 
-  static Future<void> updateCommentLikeCount(DocumentSnapshot postData,
-      bool isLikePost, MyProfileData myProfileData) async {
+  static Future<void> updateCommentLikeCount(
+      DocumentSnapshot postData, bool isLikePost, User myProfileData) async {
     postData.reference.update(
         {'commentLikeCount': FieldValue.increment(isLikePost ? -1 : 1)});
     if (!isLikePost) {
@@ -92,7 +90,7 @@ class FBCloudStore {
       String toCommentID,
       String postID,
       String commentContent,
-      MyProfileData userProfile,
+      User userProfile,
       String postFCMToken) async {
     String commentID =
         Utils.getRandomString(8) + Random().nextInt(500).toString();

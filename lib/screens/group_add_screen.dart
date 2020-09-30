@@ -65,16 +65,16 @@ class _GroupAddPageState extends State<GroupAddPage> {
             color: Colors.blue,
             textColor: Colors.white,
             onPressed: () {
-              bool check = (purchase == 'true');
-              print(price);
-              print(title);
-              print(check);
-              FirebaseFirestore.instance.collection("books").add({
-                "price": int.parse(price),
-                "title": title,
-                "purchase?": check
-              });
-              Navigator.pop(context);
+              // bool check = (purchase == 'true');
+              // print(price);
+              // print(title);
+              // print(check);
+              // FirebaseFirestore.instance.collection("books").add({
+              //   "price": int.parse(price),
+              //   "title": title,
+              //   "purchase?": check
+              // });
+              // Navigator.pop(context);
             },
             child: Text("Finish"),
           ),

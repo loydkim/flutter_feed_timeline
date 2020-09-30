@@ -6,14 +6,15 @@ import 'package:flutterthreadexample/controllers/FBStorage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
-import '../../commons/const.dart';
-import '../../commons/utils.dart';
+import 'package:flutterthreadexample/model/user_model.dart';
+import 'package:flutterthreadexample/model/user_model.dart';
 import '../../controllers/FBCloudStore.dart';
 import '../../controllers/FBStorage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../commons/utils.dart';
 
 class WritePost extends StatefulWidget {
-  final MyProfileData myData;
+  final User myData;
   WritePost({this.myData});
   @override
   State<StatefulWidget> createState() => _WritePost();

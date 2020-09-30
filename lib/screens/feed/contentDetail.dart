@@ -6,12 +6,13 @@ import 'package:flutterthreadexample/model/threadItem.dart';
 
 import '../../commons/const.dart';
 import '../../commons/utils.dart';
+import 'package:flutterthreadexample/model/user_model.dart';
 import '../../model/commentItem.dart';
 
 class ContentDetail extends StatefulWidget {
   final DocumentSnapshot postData;
-  final MyProfileData myData;
-  final ValueChanged<MyProfileData> updateMyData;
+  final User myData;
+  final ValueChanged<User> updateMyData;
   ContentDetail({this.postData, this.myData, this.updateMyData});
   @override
   State<StatefulWidget> createState() => _ContentDetail();
@@ -19,7 +20,7 @@ class ContentDetail extends StatefulWidget {
 
 class _ContentDetail extends State<ContentDetail> {
   final TextEditingController _msgTextController = new TextEditingController();
-  MyProfileData currentMyData;
+  User currentMyData;
   String _replyUserID;
   String _replyCommentID;
   String _replyUserFCMToken;

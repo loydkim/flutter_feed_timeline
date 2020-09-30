@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutterthreadexample/commons/const.dart';
+import 'package:flutterthreadexample/model/user_model.dart';
 import 'package:flutterthreadexample/screens/userProfile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -62,7 +63,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   TabController _tabController;
-  MyProfileData myData;
+  User myData;
 
   bool _isLoading = false;
 
@@ -100,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }
 
     setState(() {
-      myData = MyProfileData(
+      myData = User(
         myThumbnail: myThumbnail,
         myName: myName,
         myLikeList: prefs.getStringList('likeList'),
@@ -122,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
   }
 
-  void updateMyData(MyProfileData newMyData) {
+  void updateMyData(User newMyData) {
     setState(() {
       myData = newMyData;
     });

@@ -4,12 +4,13 @@ import 'package:flutterthreadexample/commons/const.dart';
 import 'package:flutterthreadexample/screens/feed/contentDetail.dart';
 import 'package:flutterthreadexample/model/threadItem.dart';
 import 'package:flutterthreadexample/screens/feed/writePost.dart';
-
 import '../../commons/utils.dart';
 
+import 'package:flutterthreadexample/model/user_model.dart';
+
 class ThreadMain extends StatefulWidget {
-  final MyProfileData myData;
-  final ValueChanged<MyProfileData> updateMyData;
+  final User myData;
+  final ValueChanged<User> updateMyData;
   ThreadMain({this.myData, this.updateMyData});
   @override
   State<StatefulWidget> createState() => _ThreadMain();

@@ -42,20 +42,20 @@ class Group with ChangeNotifier {
         bookmarkUserIDs = map['bookmarkUserIDs'];
 
 // 값 변경 함수
-  void updateBookmarkCount(bool isbookmarkedPost) async {
-    // MyProfileData _newProfileData = await Utils.updateLikeCount(
-    //     widget.data,
-    //     widget.myData.myLikeList != null &&
-    //             widget.myData.myLikeList.contains(widget.data.id)
-    //         ? true
-    //         : false,
-    //     widget.myData,
-    //     widget.updateMyDataToMain,
-    //     true);
-    isbookmarkedPost ? bookmarkUserIDs.remove(value)
-      isLikePost ? _likeCount-- : _likeCount++;
-    });
-  }
+  // void updateBookmarkCount(bool isbookmarkedPost) async {
+  //   // User _newProfileData = await Utils.updateLikeCount(
+  //   //     widget.data,
+  //   //     widget.myData.myLikeList != null &&
+  //   //             widget.myData.myLikeList.contains(widget.data.id)
+  //   //         ? true
+  //   //         : false,
+  //   //     widget.myData,
+  //   //     widget.updateMyDataToMain,
+  //   //     true);
+  //   // isbookmarkedPost ? bookmarkUserIDs.remove(value)
+  //   //   isLikePost ? _likeCount-- : _likeCount++;
+  //   // });
+  // }
 
 
 

@@ -4,10 +4,11 @@ import 'package:flutterthreadexample/subViews/changeUserIcon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../commons/const.dart';
+import 'package:flutterthreadexample/model/user_model.dart';
 
 class UserProfile extends StatefulWidget {
-  final MyProfileData myData;
-  final ValueChanged<MyProfileData> updateMyData;
+  final User myData;
+  final ValueChanged<User> updateMyData;
   UserProfile({this.myData, this.updateMyData});
   @override
   State<StatefulWidget> createState() => _UserProfile();
@@ -98,8 +99,7 @@ class _UserProfile extends State<UserProfile> {
       _myThumbnail = newThumbnail;
       _myName = newName;
     });
-    MyProfileData newMyData =
-        MyProfileData(myName: newName, myThumbnail: newThumbnail);
+    User newMyData = User(myName: newName, myThumbnail: newThumbnail);
     widget.updateMyData(newMyData);
   }
 
