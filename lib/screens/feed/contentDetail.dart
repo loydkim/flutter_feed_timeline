@@ -4,9 +4,9 @@ import 'package:flutterthreadexample/commons/fullPhoto.dart';
 import 'package:flutterthreadexample/controllers/FBCloudStore.dart';
 import 'package:flutterthreadexample/model/threadItem.dart';
 
-import 'commons/const.dart';
-import 'commons/utils.dart';
-import 'model/commentItem.dart';
+import '../../commons/const.dart';
+import '../../commons/utils.dart';
+import '../../model/commentItem.dart';
 
 class ContentDetail extends StatefulWidget {
   final DocumentSnapshot postData;
