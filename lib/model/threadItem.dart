@@ -6,8 +6,8 @@ import 'package:flutterthreadexample/model/user_model.dart';
 
 class ThreadItem extends StatefulWidget {
   final DocumentSnapshot data;
-  final User myData;
-  final ValueChanged<User> updateMyDataToMain;
+  final MyLocalProfileData myData;
+  final ValueChanged<MyLocalProfileData> updateMyDataToMain;
   final bool isFromThread;
   final Function threadItemAction;
   final int commentCount;
@@ -23,7 +23,7 @@ class ThreadItem extends StatefulWidget {
 }
 
 class _ThreadItem extends State<ThreadItem> {
-  User _currentMyData;
+  MyLocalProfileData _currentMyData;
   int _likeCount;
   @override
   void initState() {
@@ -33,10 +33,10 @@ class _ThreadItem extends State<ThreadItem> {
   }
 
   void _updateLikeCount(bool isLikePost) async {
-    User _newProfileData = await Utils.updateLikeCount(
+    MyLocalProfileData _newProfileData = await Utils.updateLikeCount(
         widget.data,
-        widget.myData.myLikeList != null &&
-                widget.myData.myLikeList.contains(widget.data.id)
+        widget.myData.likeFeeds != null &&
+                widget.myData.likeFeeds.contains(widget.data.id)
             ? true
             : false,
         widget.myData,
@@ -132,17 +132,17 @@ class _ThreadItem extends State<ThreadItem> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     GestureDetector(
-                      onTap: () => _updateLikeCount(_currentMyData.myLikeList !=
+                      onTap: () => _updateLikeCount(_currentMyData.likeFeeds !=
                                   null &&
-                              _currentMyData.myLikeList.contains(widget.data.id)
+                              _currentMyData.likeFeeds.contains(widget.data.id)
                           ? true
                           : false),
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.thumb_up,
                               size: 18,
-                              color: widget.myData.myLikeList != null &&
-                                      widget.myData.myLikeList
+                              color: widget.myData.likeFeeds != null &&
+                                      widget.myData.likeFeeds
                                           .contains(widget.data.id)
                                   ? Colors.blue[900]
                                   : Colors.black),
@@ -153,8 +153,8 @@ class _ThreadItem extends State<ThreadItem> {
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: widget.myData.myLikeList != null &&
-                                          widget.myData.myLikeList
+                                  color: widget.myData.likeFeeds != null &&
+                                          widget.myData.likeFeeds
                                               .contains(widget.data.id)
                                       ? Colors.blue[900]
                                       : Colors.black),

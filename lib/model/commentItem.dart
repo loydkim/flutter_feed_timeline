@@ -6,9 +6,9 @@ import 'package:flutterthreadexample/model/user_model.dart';
 
 class CommentItem extends StatefulWidget {
   final DocumentSnapshot data;
-  final User myData;
+  final MyLocalProfileData myData;
   final Size size;
-  final ValueChanged<User> updateMyDataToMain;
+  final ValueChanged<MyLocalProfileData> updateMyDataToMain;
   final ValueChanged<List<String>> replyComment;
   CommentItem(
       {this.data,
@@ -21,7 +21,7 @@ class CommentItem extends StatefulWidget {
 }
 
 class _CommentItem extends State<CommentItem> {
-  User _currentMyData;
+  MyLocalProfileData _currentMyData;
   @override
   void initState() {
     _currentMyData = widget.myData;
@@ -29,8 +29,12 @@ class _CommentItem extends State<CommentItem> {
   }
 
   void _updateLikeCount(bool isLikePost) async {
-    User _newProfileData = await Utils.updateLikeCount(widget.data, isLikePost,
-        widget.myData, widget.updateMyDataToMain, false);
+    MyLocalProfileData _newProfileData = await Utils.updateLikeCount(
+        widget.data,
+        isLikePost,
+        widget.myData,
+        widget.updateMyDataToMain,
+        false);
     setState(() {
       _currentMyData = _newProfileData;
     });
@@ -118,20 +122,20 @@ class _CommentItem extends State<CommentItem> {
                               widget.data.get('commentTimeStamp'))),
                           GestureDetector(
                               onTap: () => _updateLikeCount(
-                                  _currentMyData.myLikeCommnetList != null &&
-                                          _currentMyData.myLikeCommnetList
+                                  _currentMyData.likeCommnets != null &&
+                                          _currentMyData.likeCommnets
                                               .contains(widget.data.id)
                                       ? true
                                       : false),
                               child: Text('Like',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: _currentMyData.myLikeCommnetList !=
-                                                  null &&
-                                              _currentMyData.myLikeCommnetList
-                                                  .contains(widget.data.id)
-                                          ? Colors.blue[900]
-                                          : Colors.grey[700]))),
+                                      color:
+                                          _currentMyData.likeCommnets != null &&
+                                                  _currentMyData.likeCommnets
+                                                      .contains(widget.data.id)
+                                              ? Colors.blue[900]
+                                              : Colors.grey[700]))),
                           GestureDetector(
                               onTap: () {
                                 widget.replyComment([

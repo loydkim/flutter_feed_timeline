@@ -3,7 +3,7 @@ import 'package:flutterthreadexample/commons/const.dart';
 import 'package:flutterthreadexample/model/user_model.dart';
 
 class ChangeUserIcon extends StatefulWidget {
-  final User myData;
+  final MyLocalProfileData myData;
   ChangeUserIcon({this.myData});
   @override
   State<StatefulWidget> createState() => _ChangeUserIcon();

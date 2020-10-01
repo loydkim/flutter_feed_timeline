@@ -81,26 +81,25 @@ class Utils {
     );
   }
 
-  static Future<User> updateLikeCount(
+  static Future<MyLocalProfileData> updateLikeCount(
       DocumentSnapshot data,
       bool isLikePost,
-      User myProfileData,
-      ValueChanged<User> updateMyData,
+      MyLocalProfileData myProfileData,
+      ValueChanged<MyLocalProfileData> updateMyData,
       bool isThread) async {
     List<String> newLikeList = await LocalTempDB.saveLikeList(
         (isThread
             ? data.id
             : data.get(
                 'commentID')), //data.get(isThread ? 'postID' : 'commentID'),
-        myProfileData.myLikeList,
+        myProfileData.likeFeeds,
         isLikePost,
         isThread ? 'likeList' : 'likeCommnetList');
-    User myNewProfileData = User(
-        myName: myProfileData.myName,
+    MyLocalProfileData myNewProfileData = MyLocalProfileData(
+        userName: myProfileData.userName,
         myThumbnail: myProfileData.myThumbnail,
-        myLikeList: isThread ? newLikeList : myProfileData.myLikeList,
-        myLikeCommnetList:
-            isThread ? myProfileData.myLikeCommnetList : newLikeList);
+        likeFeeds: isThread ? newLikeList : myProfileData.likeFeeds,
+        likeCommnets: isThread ? myProfileData.likeCommnets : newLikeList);
     updateMyData(myNewProfileData);
     isThread
         ? await FBCloudStore.updatePostLikeCount(

@@ -9,8 +9,8 @@ import '../../commons/utils.dart';
 import 'package:flutterthreadexample/model/user_model.dart';
 
 class ThreadMain extends StatefulWidget {
-  final User myData;
-  final ValueChanged<User> updateMyData;
+  final MyLocalProfileData myData;
+  final ValueChanged<MyLocalProfileData> updateMyData;
   ThreadMain({this.myData, this.updateMyData});
   @override
   State<StatefulWidget> createState() => _ThreadMain();

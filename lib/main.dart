@@ -13,6 +13,8 @@ import 'screens/feed/thread_tab.dart';
 import 'package:flutterthreadexample/screens/explore_tab.dart';
 import 'package:flutterthreadexample/screens/group_add_screen.dart';
 
+import 'package:provider/provider.dart';
+
 void main() async {
   //https://stackoverflow.com/questions/63492211/no-firebase-app-default-has-been-created-call-firebase-initializeapp-in
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,36 +25,42 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'withOn',
-      theme: ThemeData(
-        //primarySwatch: Colors.teal,
-        // 밝기는 어둡게
-        //brightness: Brightness.dark,
-        // Color의 색상의 배열값? 색의 농도를 의미하며 100부터 900까지 100단위로 설정 가능
-        // 사용자와 상호작용하는 앨리먼트들의 기본 색상
-        primaryColor: Colors.teal[400],
-        // 위젯을 위한 전경색상
-        accentColor: Colors.teal[400],
-        // 사용할 폰트
-        //fontFamily: 'Montserrat',
-        // 텍스트 테마 설정
-        textTheme: TextTheme(
-            // headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-            // title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-            // body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-            ),
-      ),
-      //home: MyHomePage(), // 필수로 home 값 지정해줘야하나 아래 initialRoute 지정해줬으니
-      //routing
-      initialRoute: '/',
-      routes: {
-        '/': (context) => MyHomePage(),
-        //'explore': (context) => ExploreTab(),
-        '/groupAdd': (context) => GroupAddPage(),
-      },
-      debugShowCheckedModeBanner: false,
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => User(),
+          )
+        ],
+        child: MaterialApp(
+          title: 'withOn',
+          theme: ThemeData(
+            //primarySwatch: Colors.teal,
+            // 밝기는 어둡게
+            //brightness: Brightness.dark,
+            // Color의 색상의 배열값? 색의 농도를 의미하며 100부터 900까지 100단위로 설정 가능
+            // 사용자와 상호작용하는 앨리먼트들의 기본 색상
+            primaryColor: Colors.teal[400],
+            // 위젯을 위한 전경색상
+            accentColor: Colors.teal[400],
+            // 사용할 폰트
+            //fontFamily: 'Montserrat',
+            // 텍스트 테마 설정
+            textTheme: TextTheme(
+                // headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+                // title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+                // body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+                ),
+          ),
+          //home: MyHomePage(), // 필수로 home 값 지정해줘야하나 아래 initialRoute 지정해줬으니
+          //routing
+          initialRoute: '/',
+          routes: {
+            '/': (context) => MyHomePage(),
+            //'explore': (context) => ExploreTab(),
+            '/groupAdd': (context) => GroupAddPage(),
+          },
+          debugShowCheckedModeBanner: false,
+        ));
   }
 }
 
@@ -63,7 +71,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   TabController _tabController;
-  User myData;
+  MyLocalProfileData myData;
 
   bool _isLoading = false;
 
@@ -83,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String myThumbnail;
-    String myName;
+    String userName;
     if (prefs.get('myThumbnail') == null) {
       String tempThumbnail = iconImageList[Random().nextInt(50)];
       prefs.setString('myThumbnail', tempThumbnail);
@@ -92,21 +100,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       myThumbnail = prefs.get('myThumbnail');
     }
 
-    if (prefs.get('myName') == null) {
+    if (prefs.get('userName') == null) {
       String tempName = Utils.getRandomString(8);
-      prefs.setString('myName', tempName);
-      myName = tempName;
+      prefs.setString('userName', tempName);
+      userName = tempName;
     } else {
-      myName = prefs.get('myName');
+      userName = prefs.get('userName');
     }
 
     setState(() {
-      myData = User(
+      myData = MyLocalProfileData(
         myThumbnail: myThumbnail,
-        myName: myName,
-        myLikeList: prefs.getStringList('likeList'),
-        myLikeCommnetList: prefs.getStringList('likeCommnetList'),
-        myFCMToken: prefs.getString('FCMToken'),
+        userName: userName,
+        likeFeeds: prefs.getStringList('likeList'),
+        likeCommnets: prefs.getStringList('likeCommnetList'),
+        userFCMToken: prefs.getString('FCMToken'),
       );
     });
 
@@ -123,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
   }
 
-  void updateMyData(User newMyData) {
+  void updateMyData(MyLocalProfileData newMyData) {
     setState(() {
       myData = newMyData;
     });
@@ -141,10 +149,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           TabBarView(controller: _tabController, children: [
             ExploreTab(),
             ThreadMain(
-              myData: myData,
-              updateMyData: updateMyData,
-            ),
-            UserProfile(
               myData: myData,
               updateMyData: updateMyData,
             ),

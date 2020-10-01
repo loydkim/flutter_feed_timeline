@@ -8,18 +8,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutterthreadexample/model/user_model.dart';
 
 class FBCloudStore {
-  static Future<void> sendPostInFirebase(DocumentReference newThreadRef,
-      String postContent, User userProfile, String postImageURL) async {
+  static Future<void> sendPostInFirebase(
+      DocumentReference newThreadRef,
+      String postContent,
+      MyLocalProfileData userProfile,
+      String postImageURL) async {
     String postFCMToken;
-    if (userProfile.myFCMToken == null) {
+    if (userProfile.userFCMToken == null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       postFCMToken = prefs.get('FCMToken');
     } else {
-      postFCMToken = userProfile.myFCMToken;
+      postFCMToken = userProfile.userFCMToken;
     }
 
     newThreadRef.set({
-      'userName': userProfile.myName,
+      'userName': userProfile.userName,
       'userThumbnail': userProfile.myThumbnail,
       'postTimeStamp': DateTime.now().millisecondsSinceEpoch,
       'postContent': postContent,
@@ -31,13 +34,13 @@ class FBCloudStore {
   }
 
   static Future<void> likeToPost(
-      String postID, User userProfile, bool isLikePost) async {
+      String postID, MyLocalProfileData userProfile, bool isLikePost) async {
     if (isLikePost) {
       DocumentReference likeReference = FirebaseFirestore.instance
           .collection('thread')
           .doc(postID)
           .collection('like')
-          .doc(userProfile.myName);
+          .doc(userProfile.userName);
       await FirebaseFirestore.instance
           .runTransaction((Transaction myTransaction) async {
         myTransaction.delete(likeReference);
@@ -47,22 +50,22 @@ class FBCloudStore {
           .collection('thread')
           .doc(postID)
           .collection('like')
-          .doc(userProfile.myName)
+          .doc(userProfile.userName)
           .set({
-        'userName': userProfile.myName,
+        'userName': userProfile.userName,
         'userThumbnail': userProfile.myThumbnail,
       });
     }
   }
 
-  static Future<void> updatePostLikeCount(
-      DocumentSnapshot postData, bool isLikePost, User myProfileData) async {
+  static Future<void> updatePostLikeCount(DocumentSnapshot postData,
+      bool isLikePost, MyLocalProfileData myProfileData) async {
     postData.reference
         .update({'postLikeCount': FieldValue.increment(isLikePost ? -1 : 1)});
     if (!isLikePost) {
       await FBCloudMessaging.instance.sendNotificationMessageToPeerUser(
-          '${myProfileData.myName} likes your post',
-          '${myProfileData.myName}',
+          '${myProfileData.userName} likes your post',
+          '${myProfileData.userName}',
           postData.get('FCMToken'));
     }
   }
@@ -73,14 +76,14 @@ class FBCloudStore {
     postData.reference.update({'postCommentCount': FieldValue.increment(1)});
   }
 
-  static Future<void> updateCommentLikeCount(
-      DocumentSnapshot postData, bool isLikePost, User myProfileData) async {
+  static Future<void> updateCommentLikeCount(DocumentSnapshot postData,
+      bool isLikePost, MyLocalProfileData myProfileData) async {
     postData.reference.update(
         {'commentLikeCount': FieldValue.increment(isLikePost ? -1 : 1)});
     if (!isLikePost) {
       await FBCloudMessaging.instance.sendNotificationMessageToPeerUser(
-          '${myProfileData.myName} likes your comment',
-          '${myProfileData.myName}',
+          '${myProfileData.userName} likes your comment',
+          '${myProfileData.userName}',
           postData.get('FCMToken'));
     }
   }
@@ -90,16 +93,16 @@ class FBCloudStore {
       String toCommentID,
       String postID,
       String commentContent,
-      User userProfile,
+      MyLocalProfileData userProfile,
       String postFCMToken) async {
     String commentID =
         Utils.getRandomString(8) + Random().nextInt(500).toString();
-    String myFCMToken;
-    if (userProfile.myFCMToken == null) {
+    String userFCMToken;
+    if (userProfile.userFCMToken == null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      myFCMToken = prefs.get('FCMToken');
+      userFCMToken = prefs.get('FCMToken');
     } else {
-      myFCMToken = userProfile.myFCMToken;
+      userFCMToken = userProfile.userFCMToken;
     }
 
     FirebaseFirestore.instance
@@ -111,14 +114,14 @@ class FBCloudStore {
       'toUserID': toUserID,
       'commentID': commentID,
       'toCommentID': toCommentID,
-      'userName': userProfile.myName,
+      'userName': userProfile.userName,
       'userThumbnail': userProfile.myThumbnail,
       'commentTimeStamp': DateTime.now().millisecondsSinceEpoch,
       'commentContent': commentContent,
       'commentLikeCount': 0,
-      'FCMToken': myFCMToken
+      'FCMToken': userFCMToken
     });
     await FBCloudMessaging.instance.sendNotificationMessageToPeerUser(
-        commentContent, '${userProfile.myName} was commented', postFCMToken);
+        commentContent, '${userProfile.userName} was commented', postFCMToken);
   }
 }

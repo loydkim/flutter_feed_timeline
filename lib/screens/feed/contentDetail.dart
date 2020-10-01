@@ -11,8 +11,8 @@ import '../../model/commentItem.dart';
 
 class ContentDetail extends StatefulWidget {
   final DocumentSnapshot postData;
-  final User myData;
-  final ValueChanged<User> updateMyData;
+  final MyLocalProfileData myData;
+  final ValueChanged<MyLocalProfileData> updateMyData;
   ContentDetail({this.postData, this.myData, this.updateMyData});
   @override
   State<StatefulWidget> createState() => _ContentDetail();
@@ -20,7 +20,7 @@ class ContentDetail extends StatefulWidget {
 
 class _ContentDetail extends State<ContentDetail> {
   final TextEditingController _msgTextController = new TextEditingController();
-  User currentMyData;
+  MyLocalProfileData currentMyData;
   String _replyUserID;
   String _replyCommentID;
   String _replyUserFCMToken;

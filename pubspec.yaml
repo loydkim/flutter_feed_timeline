@@ -43,6 +43,14 @@ dependencies:
 
   #url 정보 https://pub.dev/packages/flutter_link_preview/install
   flutter_link_preview: ^1.5.6
+
+  #로그인 위한 LIBRARY
+  firebase_auth: "^0.18.0+1"
+  flutter_signin_button: ^1.1.0  # https://pub.dev/packages/flutter_signin_button
+  flutter_login_facebook: ^0.2.1   # https://pub.dev/packages/flutter_login_facebook
+  
+  provider: "^4.3.2+2"
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

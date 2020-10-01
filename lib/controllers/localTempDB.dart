@@ -1,18 +1,18 @@
-
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocalTempDB{
-  static Future<List<String>> saveLikeList(String postID,List<String> myLikeList,bool isLikePost,String updateType) async{
+class LocalTempDB {
+  static Future<List<String>> saveLikeList(String postID,
+      List<String> likeFeeds, bool isLikePost, String updateType) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> newLikeList = myLikeList;
-    if(myLikeList == null) {
+    List<String> newLikeList = likeFeeds;
+    if (likeFeeds == null) {
       newLikeList = List<String>();
       newLikeList.add(postID);
-    }else {
+    } else {
       if (isLikePost) {
-        myLikeList.remove(postID);
-      }else {
-        myLikeList.add(postID);
+        likeFeeds.remove(postID);
+      } else {
+        likeFeeds.add(postID);
       }
     }
     prefs.setStringList(updateType, newLikeList);

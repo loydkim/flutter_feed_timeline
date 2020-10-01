@@ -1,42 +1,53 @@
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// class User {
-//   final String id; //내부에서만 활용?
-//   final String email;
-//   final String username;
-//   final String profileImageURL;
-//   final String bio;
+class User with ChangeNotifier {
+  final String id; //내부에서만 활용?
+  final String userFCMToken;
+  String email;
+  String userName;
+  String profileImageURL;
+  String descript;
 
-//   User({
-//     this.id,
-//     this.email,
-//     this.username,
-//     this.profileImageURL,
-//     this.bio,
-//   });
+  //feed
+  List<String> likeFeeds;
+  List<String> likeCommnets;
+  //group
+  List<DocumentReference> groupsAsMember;
+  List<DocumentReference> groupsAsOwner;
+  List<DocumentReference> bookmarkGroups;
 
-//   factory User.fromDocument(DocumentSnapshot doc) {
-//     Map getDocs = doc.data();
-//     return User(
-//       id: doc.id,
-//       email: getDocs["email"],
-//       username: getDocs["username"],
-//       profileImageURL: getDocs["profileImageURL"],
-//       bio: getDocs["bio"],
-//     );
-//   }
-// }
+  String myThumbnail = '001-panda.png'; // 삭제필요
 
-class User {
+  // Constructor
+  User.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.reference.id, snapshot.data());
+
+  User.fromMap(String id, Map<String, dynamic> map)
+      : this.id = id,
+        userFCMToken = map['userFCMToken'] {
+    email = map['email'];
+    userName = map['userName'];
+    profileImageURL = map['profileImageURL'];
+    descript = map['descript'];
+    likeFeeds = map['likeFeeds'];
+    likeCommnets = map['likeCommnets'];
+    groupsAsMember = map['groupsAsMember'];
+    groupsAsOwner = map['groupsAsOwner'];
+    bookmarkGroups = map['bookmarkGroups'];
+  }
+}
+
+class MyLocalProfileData {
   final String myThumbnail;
-  final String myName;
-  final List<String> myLikeList;
-  final List<String> myLikeCommnetList;
-  final String myFCMToken;
-  User(
-      {this.myName,
+  final String userName;
+  final List<String> likeFeeds;
+  final List<String> likeCommnets;
+  final String userFCMToken;
+  MyLocalProfileData(
+      {this.userName,
       this.myThumbnail,
-      this.myLikeList,
-      this.myLikeCommnetList,
-      this.myFCMToken});
+      this.likeFeeds,
+      this.likeCommnets,
+      this.userFCMToken});
 }

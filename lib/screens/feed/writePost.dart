@@ -14,7 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../commons/utils.dart';
 
 class WritePost extends StatefulWidget {
-  final User myData;
+  final MyLocalProfileData myData;
   WritePost({this.myData});
   @override
   State<StatefulWidget> createState() => _WritePost();
@@ -141,7 +141,7 @@ class _WritePost extends State<WritePost> {
                                         'images/${widget.myData.myThumbnail}')),
                               ),
                               Text(
-                                widget.myData.myName,
+                                widget.myData.userName,
                                 style: TextStyle(
                                     fontSize: 22, fontWeight: FontWeight.bold),
                               ),
