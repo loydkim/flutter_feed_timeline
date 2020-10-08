@@ -16,7 +16,7 @@ class Group with ChangeNotifier {
   Timestamp endOpTime;
 
   DocumentReference ownerID;
-  List<DocumentReference> contentIDs;
+  //List<DocumentReference> contentIDs;
   List<DocumentReference> memberUserIDs;
   List<DocumentReference> bookmarkUserIDs;
   //final DocumentReference reference; //firebase 데이터를 참조할 수 있는 링크
@@ -38,7 +38,7 @@ class Group with ChangeNotifier {
     thumbnailURL = map['thumbnailURL'];
     startOpTime = map['startOpTime'];
     endOpTime = map['endOpTime'];
-    contentIDs = map['contentIDs'];
+    // contentIDs = map['contentIDs'];
     memberUserIDs = map['memberUserIDs'];
     bookmarkUserIDs = map['bookmarkUserIDs'];
   }

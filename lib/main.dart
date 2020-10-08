@@ -11,9 +11,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'screens/feed/thread_tab.dart';
 
 import 'package:flutterthreadexample/screens/explore_tab.dart';
-import 'package:flutterthreadexample/screens/group_add_screen.dart';
+import 'package:flutterthreadexample/screens/group_add1_screen.dart';
 
 import 'package:provider/provider.dart';
+import 'package:flutterthreadexample/blocs/auth_bloc.dart';
 
 void main() async {
   //https://stackoverflow.com/questions/63492211/no-firebase-app-default-has-been-created-call-firebase-initializeapp-in
@@ -27,9 +28,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(
-            create: (_) => User(),
-          )
+          // 스트림 프로바이더로 파이어베이스 내 인증 정보를 읽어들임. 인증 상태가 변하면, 변한 값이 출력됨.
+          Provider<AuthBloc>(create: (_) => AuthBloc()),
+          // 스트림 프로바이더로 파이어스토어 데이터를 읽어들임.
+          // StreamProvider<List<User>>.value(
+          //   value: db.getUser(),
+          // ),
         ],
         child: MaterialApp(
           title: 'withOn',
@@ -56,8 +60,9 @@ class MyApp extends StatelessWidget {
           initialRoute: '/',
           routes: {
             '/': (context) => MyHomePage(),
-            //'explore': (context) => ExploreTab(),
-            '/groupAdd': (context) => GroupAddPage(),
+            //'/explore': (context) => ExploreTab(),
+            ContentsAddPage.routeName: (context) => ContentsAddPage(),
+            GroupAddPage.routeName: (context) => GroupAddPage(),
           },
           debugShowCheckedModeBanner: false,
         ));
@@ -152,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               myData: myData,
               updateMyData: updateMyData,
             ),
+            ExploreTab(),
           ]),
           Utils.loadingCircle(_isLoading),
         ],

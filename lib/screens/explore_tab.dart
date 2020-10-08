@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutterthreadexample/subViews/header_widget.dart';
 import 'package:flutterthreadexample/subViews/float_button_widget.dart';
 
-import 'package:flutterthreadexample/screens/group_add_screen.dart';
+import 'package:flutterthreadexample/screens/group_add1_screen.dart';
 
 //import 'package:flutter/cupertino.dart';
 //import 'package:flutter/foundation.dart';
@@ -58,7 +58,7 @@ class _ExploreTabState extends State<ExploreTab> {
       ),
       floatingActionButton: FloatButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/groupAdd');
+          Navigator.pushNamed(context, '/contentsAdd');
         },
         label: 'Add',
         icon: Icon(Icons.add),

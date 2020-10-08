@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User with ChangeNotifier {
   final String id; //내부에서만 활용?
+  final Timestamp createdTime;
   final String userFCMToken;
   String email;
   String userName;
@@ -25,6 +26,7 @@ class User with ChangeNotifier {
 
   User.fromMap(String id, Map<String, dynamic> map)
       : this.id = id,
+        createdTime = map['createdTime'],
         userFCMToken = map['userFCMToken'] {
     email = map['email'];
     userName = map['userName'];
