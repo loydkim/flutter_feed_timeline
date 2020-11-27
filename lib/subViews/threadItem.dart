@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutterthreadexample/commons/const.dart';
 import 'package:flutterthreadexample/commons/utils.dart';
 
+import '../reportPost.dart';
+
 class ThreadItem extends StatefulWidget{
+  final BuildContext parentContext;
   final DocumentSnapshot data;
   final MyProfileData myData;
   final ValueChanged<MyProfileData> updateMyDataToMain;
   final bool isFromThread;
   final Function threadItemAction;
   final int commentCount;
-  ThreadItem({this.data,this.myData,this.updateMyDataToMain,this.threadItemAction,this.isFromThread,this.commentCount});
+  ThreadItem({this.data,this.myData,this.updateMyDataToMain,this.threadItemAction,this.isFromThread,this.commentCount,this.parentContext});
   @override State<StatefulWidget> createState() => _ThreadItem();
 }
 
@@ -66,6 +69,32 @@ class _ThreadItem extends State<ThreadItem>{
                           child: Text(Utils.readTimestamp(widget.data['postTimeStamp']),style: TextStyle(fontSize: 16,color: Colors.black87),),
                         ),
                       ],
+                    ),
+                    Spacer(),
+                    PopupMenuButton<int>(
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 1,
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right:8.0,left:8.0),
+                                child: Icon(Icons.report),
+                              ),
+                              Text("Report"),
+                            ],
+                          ),
+                        ),
+                      ],
+                      initialValue: 1,
+                      onCanceled: () {
+                        print("You have canceled the menu.");
+                      },
+                      onSelected: (value) {
+                        showDialog(
+                            context: widget.parentContext,
+                            builder: (BuildContext context) => ReportPost(postUserName: widget.data['userName'],postId:widget.data['postID'],content:widget.data['postContent'],reporter: widget.myData.myName,));
+                      },
                     ),
                   ],
                 ),
