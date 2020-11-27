@@ -28,6 +28,20 @@ class FBCloudStore{
     });
   }
 
+  static Future<void> sendReportUserToFB(context,String reason, String userName,String postId,String content,String reporter) async{
+    try {
+      Firestore.instance.collection('report').document().setData({
+        'reason': reason,
+        'author': userName,
+        'postId':postId,
+        'content':content,
+        'reporter':reporter
+      });
+    }catch(e) {
+      print('Report post error');
+    }
+  }
+
   static Future<void> likeToPost(String postID,MyProfileData userProfile,bool isLikePost) async{
     if (isLikePost) {
       DocumentReference likeReference = Firestore.instance.collection('thread').document(postID).collection('like').document(userProfile.myName);
