@@ -14,4 +14,4 @@ class MyProfileData{
   MyProfileData({this.myName,this.myThumbnail,this.myLikeList,this.myLikeCommnetList,this.myFCMToken});
 }
 
-
+const reportMessage = 'Thank you for reporting. We will determine the user\'s information within 24 hours and delete the account or take action to stop it.';
