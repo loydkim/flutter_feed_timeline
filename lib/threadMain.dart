@@ -34,7 +34,7 @@ class _ThreadMain extends State<ThreadMain>{
               ListView(
                 shrinkWrap: true,
                 children: snapshot.data.documents.map((DocumentSnapshot data){
-                  return ThreadItem(data: data,myData: widget.myData,updateMyDataToMain: widget.updateMyData,threadItemAction: _moveToContentDetail,isFromThread:true,commentCount: data['postCommentCount'],);
+                  return ThreadItem(data: data,myData: widget.myData,updateMyDataToMain: widget.updateMyData,threadItemAction: _moveToContentDetail,isFromThread:true,commentCount: data['postCommentCount'],parentContext: context,);
                 }).toList(),
               ) : Container(
                 child: Center(

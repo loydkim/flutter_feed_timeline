@@ -73,7 +73,7 @@ class _ContentDetail extends State<ContentDetail> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              ThreadItem(data: widget.postData,myData: widget.myData,updateMyDataToMain: widget.updateMyData,threadItemAction: _moveToFullImage,isFromThread:false),
+                              ThreadItem(data: widget.postData,myData: widget.myData,updateMyDataToMain: widget.updateMyData,threadItemAction: _moveToFullImage,isFromThread:false,commentCount: snapshot.data.documents.length,parentContext: context,),
                               snapshot.data.documents.length > 0 ? ListView(
                                 primary: false,
                                 shrinkWrap: true,
