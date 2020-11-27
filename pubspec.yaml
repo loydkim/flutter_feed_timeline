@@ -39,6 +39,7 @@ dependencies:
   photo_view: ^0.9.2
 
   url_launcher: ^5.4.10
+  fluttertoast: ^7.1.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
