@@ -89,6 +89,7 @@ class _ContentsAddPageState extends State<ContentsAddPage> {
                     ),
                   ],
                 ),
+                // URL 콘텐츠에 대한 미리보기 보여주는 부분
                 Expanded(
                   child: ListView.builder(
                     itemCount: urls.length,
@@ -145,6 +146,7 @@ class _ContentsAddPageState extends State<ContentsAddPage> {
     );
   }
 
+  // open graph 정보 보여주기
   Widget _buildCustomLinkPreview(BuildContext context, index) {
     return FlutterLinkPreview(
       //key: ValueKey("${_controller.value.text}211"),  // DUPLICATE KEY 에러 발생

@@ -43,7 +43,7 @@ class _ThreadMain extends State<ThreadMain> {
                 snapshot.data.docs.length > 0
                     ? ListView(
                         shrinkWrap: true,
-                        children:
+                        children: // doc 각각에 대해 ThreadItem 실행
                             snapshot.data.docs.map((DocumentSnapshot data) {
                           return ThreadItem(
                               data: data,

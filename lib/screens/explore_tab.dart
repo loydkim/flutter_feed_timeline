@@ -60,7 +60,7 @@ class _ExploreTabState extends State<ExploreTab> {
         onPressed: () {
           Navigator.pushNamed(context, '/contentsAdd');
         },
-        label: 'Add',
+        label: 'Create',
         icon: Icon(Icons.add),
       ),
     );

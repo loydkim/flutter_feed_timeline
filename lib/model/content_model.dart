@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_link_preview/flutter_link_preview.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Content {
   final String id;
